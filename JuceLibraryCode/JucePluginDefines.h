@@ -17,7 +17,7 @@
  #define JucePlugin_Build_VST3             1
 #endif
 #ifndef  JucePlugin_Build_AU
- #define JucePlugin_Build_AU               1
+ #define JucePlugin_Build_AU               0
 #endif
 #ifndef  JucePlugin_Build_AUv3
  #define JucePlugin_Build_AUv3             0
@@ -44,13 +44,13 @@
  #define JucePlugin_Name                   "misty"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "misty"
+ #define JucePlugin_Desc                   "midi file reader/player"
 #endif
 #ifndef  JucePlugin_Manufacturer
- #define JucePlugin_Manufacturer           "yourcompany"
+ #define JucePlugin_Manufacturer           "autumnull"
 #endif
 #ifndef  JucePlugin_ManufacturerWebsite
- #define JucePlugin_ManufacturerWebsite    "www.yourcompany.com"
+ #define JucePlugin_ManufacturerWebsite    "www.autumnull.com"
 #endif
 #ifndef  JucePlugin_ManufacturerEmail
  #define JucePlugin_ManufacturerEmail      ""
@@ -68,34 +68,34 @@
  #define JucePlugin_WantsMidiInput         0
 #endif
 #ifndef  JucePlugin_ProducesMidiOutput
- #define JucePlugin_ProducesMidiOutput     0
+ #define JucePlugin_ProducesMidiOutput     1
 #endif
 #ifndef  JucePlugin_IsMidiEffect
- #define JucePlugin_IsMidiEffect           0
+ #define JucePlugin_IsMidiEffect           1
 #endif
 #ifndef  JucePlugin_EditorRequiresKeyboardFocus
  #define JucePlugin_EditorRequiresKeyboardFocus  0
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                1.0.0
+ #define JucePlugin_Version                0.0.0
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x10000
+ #define JucePlugin_VersionCode            0x0
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "1.0.0"
+ #define JucePlugin_VersionString          "0.0.0"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_VSTCategory
- #define JucePlugin_VSTCategory            kPlugCategEffect
+ #define JucePlugin_VSTCategory            kPlugCategGenerator
 #endif
 #ifndef  JucePlugin_Vst3Category
- #define JucePlugin_Vst3Category           "Fx"
+ #define JucePlugin_Vst3Category           "Fx|Generator"
 #endif
 #ifndef  JucePlugin_AUMainType
- #define JucePlugin_AUMainType             'aufx'
+ #define JucePlugin_AUMainType             'aumi'
 #endif
 #ifndef  JucePlugin_AUSubType
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
@@ -110,10 +110,10 @@
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.yourcompany.misty
+ #define JucePlugin_CFBundleIdentifier     com.autumnull.misty
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.yourcompany.misty
+ #define JucePlugin_AAXIdentifier          com.autumnull.misty
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode
@@ -122,7 +122,7 @@
  #define JucePlugin_AAXProductId           JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AAXCategory
- #define JucePlugin_AAXCategory            0
+ #define JucePlugin_AAXCategory            2048
 #endif
 #ifndef  JucePlugin_AAXDisableBypass
  #define JucePlugin_AAXDisableBypass       0
@@ -137,7 +137,7 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "yourcompany: misty"
+ #define JucePlugin_IAAName                "autumnull: misty"
 #endif
 #ifndef  JucePlugin_VSTNumMidiInputs
  #define JucePlugin_VSTNumMidiInputs       16
@@ -152,10 +152,10 @@
  #define JucePlugin_ARATransformationFlags  0
 #endif
 #ifndef  JucePlugin_ARAFactoryID
- #define JucePlugin_ARAFactoryID           "com.yourcompany.misty.factory"
+ #define JucePlugin_ARAFactoryID           "com.autumnull.misty.factory"
 #endif
 #ifndef  JucePlugin_ARADocumentArchiveID
- #define JucePlugin_ARADocumentArchiveID   "com.yourcompany.misty.aradocumentarchive.1.0.0"
+ #define JucePlugin_ARADocumentArchiveID   "com.autumnull.misty.aradocumentarchive.0.0.0"
 #endif
 #ifndef  JucePlugin_ARACompatibleArchiveIDs
  #define JucePlugin_ARACompatibleArchiveIDs  ""

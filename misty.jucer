@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="UczeYC" name="misty" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" displaySplashScreen="1">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildStandalone,buildVST3"
+              pluginDesc="midi file reader/player" companyName="autumnull"
+              projectLineFeed="&#10;" pluginCharacteristicsValue="pluginIsMidiEffectPlugin,pluginProducesMidiOut"
+              version="0.0.0" pluginVST3Category="Generator" pluginRTASCategory="2048"
+              pluginAAXCategory="2048" pluginVSTCategory="kPlugCategGenerator"
+              displaySplashScreen="1">
   <MAINGROUP id="CVxxQD" name="misty">
     <GROUP id="{459B00F5-3F95-D9A1-58DA-F48F8498A4E7}" name="Source">
       <FILE id="XdC9Xs" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -51,4 +56,7 @@
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
+  <LIVE_SETTINGS>
+    <LINUX/>
+  </LIVE_SETTINGS>
 </JUCERPROJECT>
