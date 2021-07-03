@@ -5,16 +5,31 @@ MistyAudioProcessorEditor::MistyAudioProcessorEditor(MistyAudioProcessor& p) :
 	AudioProcessorEditor(&p),
 	audioProcessor(p)
 {
-	midiVolume.setSliderStyle(juce::Slider::LinearBarVertical);
-	midiVolume.setRange(0.0, 127.0, 1.0);
-	midiVolume.setTextBoxStyle(juce::Slider::NoTextBox, false, 90, 0);
-	midiVolume.setPopupDisplayEnabled(true, false, this);
-	midiVolume.setTextValueSuffix(" Volume");
-	midiVolume.setValue(1.0);
-	addAndMakeVisible(&midiVolume);
-	midiVolume.addListener(this);
+	openButton.setButtonText("Open");
+	openButton.setColour(juce::TextButton::buttonColourId, juce::Colours::transparentWhite);
+	openButton.onClick = [this] { openButtonClicked(); };
+	addAndMakeVisible(&openButton);
 
-    setSize(200, 200);
+	resetButtonShape.addRectangle(2, 2, 4, 23);
+	resetButtonShape.addTriangle(6, 12.5, 23, 23, 23, 2);
+
+	resetButton.setShape(resetButtonShape, false, true, false);
+	resetButton.onClick = [this] { resetButtonClicked(); };
+	addChildComponent(resetButton);
+
+	pauseButtonShape.addRectangle(4, 2, 6, 23);
+	pauseButtonShape.addRectangle(15, 2, 6, 23);
+	playButtonShape.addTriangle(3, 23, 3, 2, 22, 12.5);
+
+	playButton.setShape(playButtonShape, false, true, false);
+	playButton.onClick = [this] { playButtonClicked(); };
+	playButton.setClickingTogglesState(true);
+	auto light = GREY.brighter(0.5);
+	playButton.setOnColours(light, light.brighter(0.5), light);
+	playButton.shouldUseOnColours(true);
+	addChildComponent(playButton);
+
+    setSize(600, 150);
 }
 
 MistyAudioProcessorEditor::~MistyAudioProcessorEditor()
@@ -24,19 +39,109 @@ MistyAudioProcessorEditor::~MistyAudioProcessorEditor()
 
 void MistyAudioProcessorEditor::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colours::white);
+	// background
+    g.fillAll(juce::Colours::dimgrey);
 
-    g.setColour(juce::Colours::black);
-    g.setFont(15.0f);
-    g.drawFittedText("Midi Volume", 0, 0, getWidth(), 30, juce::Justification::centred, 1);
+    // menubar background
+    g.setColour(juce::Colour::fromRGBA(0,0,0,80));
+    g.fillRect(0, 0, getWidth(), menuBarHeight);
+
+	// file info text
+	g.setColour(juce::Colours::lightgrey);
+	g.setFont(15.0f);
+	if (fileLoaded == "") {
+		g.drawFittedText(
+			statusMessage,
+			0, menuBarHeight,
+			getWidth(), getHeight()-menuBarHeight,
+			juce::Justification::centred, 1);
+	}
+	else {
+		auto filenameArea = getLocalBounds()
+			.removeFromTop(menuBarHeight)
+			.removeFromRight((getWidth()-menuBarHeight)/2);
+		g.drawFittedText(
+			fileLoaded,
+			filenameArea,
+			juce::Justification::centred, 1);
+	}
 }
 
 void MistyAudioProcessorEditor::resized()
 {
-	midiVolume.setBounds(40, 30, 20, getHeight()-60);
+	openButton.setBounds(0, 0, 60, menuBarHeight);
+
+	auto playBounds = juce::Rectangle<int>(getWidth()/2-menuBarHeight/2, 0, menuBarHeight, menuBarHeight);
+	auto resetBounds = playBounds.translated(-menuBarHeight, 0);
+	playBounds.reduce(4, 4); resetBounds.reduce(4, 4);
+	resetButton.setBounds(resetBounds);
+	playButton.setBounds(playBounds);
 }
 
-void MistyAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
+void MistyAudioProcessorEditor::setFileLoaded(juce::String filename)
 {
-	audioProcessor.noteOnVel = midiVolume.getValue();
+	fileLoaded = filename;
+	if (filename == "") {
+		playButton.setVisible(false);
+		resetButton.setVisible(false);
+	}
+	else {
+		playButton.setVisible(true);
+		resetButton.setVisible(true);
+	}
+}
+
+void MistyAudioProcessorEditor::openButtonClicked()
+{
+	if (! openingFile)
+		openingFile = true;
+	else
+		return;
+
+	if (playButton.getToggleState())
+		playButton.setToggleState(false, juce::sendNotification);
+
+	juce::FileChooser chooser(
+		"Select a MIDI file to play...",
+		juce::File::getSpecialLocation(juce::File::userMusicDirectory),
+		"*.mid");
+
+	if (chooser.browseForFileToOpen())
+	{
+		auto file = chooser.getResult();
+		juce::Result status = audioProcessor.loadMidiFile(file);
+		if (status.wasOk())
+		{
+			statusMessage = "";
+			setFileLoaded(file.getFileNameWithoutExtension());
+		}
+		else {
+			statusMessage = "Couldn't open file: " + status.getErrorMessage();
+			setFileLoaded("");
+		}
+	}
+	else {
+		statusMessage = "No MIDI file selected";
+	}
+	repaint();
+	openingFile = false;
+}
+
+void MistyAudioProcessorEditor::resetButtonClicked()
+{
+	if (fileLoaded == "")
+		return;
+
+	playButton.setToggleState(false, juce::sendNotification);
+}
+
+void MistyAudioProcessorEditor::playButtonClicked()
+{
+	if (fileLoaded == "")
+		return;
+
+	playButton.setShape(
+		playButton.getToggleState() ? pauseButtonShape : playButtonShape,
+		false, true, false);
+	repaint();
 }

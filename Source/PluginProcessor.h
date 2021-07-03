@@ -6,8 +6,6 @@ class MistyAudioProcessor :
 	public juce::AudioProcessor
 {
 public:
-	float noteOnVel;
-
 	MistyAudioProcessor();
     ~MistyAudioProcessor() override;
 
@@ -15,7 +13,7 @@ public:
     void releaseResources() override;
 
    #ifndef JucePlugin_PreferredChannelConfigurations
-    bool isBusesLayoutSupported(const BusesLayout& layouts) const override;
+    bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
    #endif
 
     void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
@@ -39,7 +37,10 @@ public:
     void getStateInformation(juce::MemoryBlock& destData) override;
     void setStateInformation(const void* data, int sizeInBytes) override;
 
+    juce::Result loadMidiFile(juce::File&);
+
 private:
+	juce::MidiFile midiFile;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MistyAudioProcessor)
 };

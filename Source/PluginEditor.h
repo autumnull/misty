@@ -3,9 +3,10 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 
+#define GREY juce::Colours::grey
+
 class MistyAudioProcessorEditor :
-	public juce::AudioProcessorEditor,
-	private juce::Slider::Listener
+	public juce::AudioProcessorEditor
 {
 public:
     MistyAudioProcessorEditor(MistyAudioProcessor&);
@@ -15,11 +16,27 @@ public:
     void resized() override;
 
 private:
-	void sliderValueChanged(juce::Slider* slider) override;
+	int menuBarHeight = 25;
 
-    MistyAudioProcessor& audioProcessor;
+	bool openingFile = false;
 
-    juce::Slider midiVolume;
+	juce::TextButton openButton;
+	juce::ShapeButton resetButton {"reset", GREY, GREY.brighter(), GREY};
+	juce::ShapeButton playButton  {"play",  GREY, GREY.brighter(), GREY};
+	juce::String fileLoaded;
+	juce::String statusMessage = "Select a MIDI file to play";
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MistyAudioProcessorEditor)
+	juce::Path resetButtonShape;
+	juce::Path playButtonShape;
+	juce::Path pauseButtonShape;
+
+	MistyAudioProcessor& audioProcessor;
+
+	void setFileLoaded(juce::String);
+
+    void openButtonClicked();
+	void resetButtonClicked();
+	void playButtonClicked();
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MistyAudioProcessorEditor)
 };
