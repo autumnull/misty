@@ -1,11 +1,22 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "MidiFileHolder.h"
 
 class MistyAudioProcessor :
 	public juce::AudioProcessor
 {
 public:
+	enum TransportState
+	{
+		Starting,
+		Started,
+		Pausing,
+		Paused,
+		Stopping,
+		Stopped
+	};
+
 	MistyAudioProcessor();
     ~MistyAudioProcessor() override;
 
@@ -37,10 +48,16 @@ public:
     void getStateInformation(juce::MemoryBlock& destData) override;
     void setStateInformation(const void* data, int sizeInBytes) override;
 
-    juce::Result loadMidiFile(juce::File&);
+    juce::MidiBuffer midiBuffer;
+
+	double currentSampleRate;
+	int currentSamplesPerBlock;
+	int samplesPlayed = 0;
+	TransportState state = Stopped;
 
 private:
-	juce::MidiFile midiFile;
+
+	MidiFileHolder* midiFileHolder;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MistyAudioProcessor)
 };

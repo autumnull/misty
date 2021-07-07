@@ -116,8 +116,12 @@ OBJECTS_STANDALONE_PLUGIN := \
   $(JUCE_OBJDIR)/include_juce_audio_plugin_client_Standalone_1a871192.o \
 
 OBJECTS_SHARED_CODE := \
-  $(JUCE_OBJDIR)/PluginProcessor_a059e380.o \
+  $(JUCE_OBJDIR)/MidiFileHolder_4370ab52.o \
+  $(JUCE_OBJDIR)/MidiTrack_3e01db0b.o \
   $(JUCE_OBJDIR)/PluginEditor_94d4fb09.o \
+  $(JUCE_OBJDIR)/PluginProcessor_a059e380.o \
+  $(JUCE_OBJDIR)/Timeline_dfee064a.o \
+  $(JUCE_OBJDIR)/TracksHolder_e2b852dd.o \
   $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o \
   $(JUCE_OBJDIR)/include_juce_audio_devices_63111d02.o \
   $(JUCE_OBJDIR)/include_juce_audio_formats_15f82001.o \
@@ -197,14 +201,34 @@ $(JUCE_OBJDIR)/include_juce_audio_plugin_client_Standalone_1a871192.o: ../../Juc
 	@echo "Compiling include_juce_audio_plugin_client_Standalone.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_STANDALONE_PLUGIN) $(JUCE_CFLAGS_STANDALONE_PLUGIN) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PluginProcessor_a059e380.o: ../../Source/PluginProcessor.cpp
+$(JUCE_OBJDIR)/MidiFileHolder_4370ab52.o: ../../Source/MidiFileHolder.cpp
 	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling PluginProcessor.cpp"
+	@echo "Compiling MidiFileHolder.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/MidiTrack_3e01db0b.o: ../../Source/MidiTrack.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling MidiTrack.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/PluginEditor_94d4fb09.o: ../../Source/PluginEditor.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling PluginEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PluginProcessor_a059e380.o: ../../Source/PluginProcessor.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling PluginProcessor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Timeline_dfee064a.o: ../../Source/Timeline.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling Timeline.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TracksHolder_e2b852dd.o: ../../Source/TracksHolder.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling TracksHolder.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o: ../../JuceLibraryCode/include_juce_audio_basics.cpp

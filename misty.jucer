@@ -5,17 +5,27 @@
               pluginDesc="midi file reader/player" companyName="autumnull"
               projectLineFeed="&#10;" pluginCharacteristicsValue="pluginIsMidiEffectPlugin,pluginProducesMidiOut"
               version="0.0.0" pluginVST3Category="Generator" pluginRTASCategory="2048"
-              pluginAAXCategory="2048" pluginVSTCategory="kPlugCategGenerator"
-              displaySplashScreen="1">
+              pluginAAXCategory="2048" displaySplashScreen="1" pluginVSTCategory="kPlugCategGenerator">
   <MAINGROUP id="CVxxQD" name="misty">
     <GROUP id="{459B00F5-3F95-D9A1-58DA-F48F8498A4E7}" name="Source">
+      <FILE id="k4Mdba" name="MidiFileHolder.cpp" compile="1" resource="0"
+            file="Source/MidiFileHolder.cpp"/>
+      <FILE id="fiTSSj" name="MidiFileHolder.h" compile="0" resource="0"
+            file="Source/MidiFileHolder.h"/>
+      <FILE id="O8TcSo" name="MidiTrack.cpp" compile="1" resource="0" file="Source/MidiTrack.cpp"/>
+      <FILE id="OAZftv" name="MidiTrack.h" compile="0" resource="0" file="Source/MidiTrack.h"/>
+      <FILE id="GmtH0z" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="vMO8mC" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       <FILE id="XdC9Xs" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="b935Fw" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="GmtH0z" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="vMO8mC" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="alX4gz" name="Timeline.cpp" compile="1" resource="0" file="Source/Timeline.cpp"/>
+      <FILE id="M4mUcv" name="Timeline.h" compile="0" resource="0" file="Source/Timeline.h"/>
+      <FILE id="Sjo6QG" name="TracksHolder.cpp" compile="1" resource="0"
+            file="Source/TracksHolder.cpp"/>
+      <FILE id="SyByfa" name="TracksHolder.h" compile="0" resource="0" file="Source/TracksHolder.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

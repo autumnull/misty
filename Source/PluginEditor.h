@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "MidiFileHolder.h"
 
 #define GREY juce::Colours::grey
 
@@ -19,11 +20,11 @@ private:
 	int menuBarHeight = 25;
 
 	std::unique_ptr<juce::FileChooser> fileChooser;
+	bool fileLoaded = false;
 
 	juce::TextButton openButton;
 	juce::ShapeButton resetButton {"reset", GREY, GREY.brighter(), GREY};
 	juce::ShapeButton playButton  {"play",  GREY, GREY.brighter(), GREY};
-	juce::String fileLoaded;
 	juce::String statusMessage = "Select a MIDI file to play";
 
 	juce::Path resetButtonShape;
@@ -31,8 +32,9 @@ private:
 	juce::Path pauseButtonShape;
 
 	MistyAudioProcessor& audioProcessor;
+	MidiFileHolder midiFileHolder;
 
-	void setFileLoaded(juce::String);
+	void setLoadedInterface(bool);
 
     void openButtonClicked();
 	void resetButtonClicked();
