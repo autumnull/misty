@@ -85,7 +85,8 @@ void MistyAudioProcessor::changeProgramName(int index, const juce::String& newNa
 
 void MistyAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
-
+	currentSampleRate = sampleRate;
+	currentSamplesPerBlock = samplesPerBlock;
 }
 
 void MistyAudioProcessor::releaseResources()
@@ -121,23 +122,32 @@ bool MistyAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) co
 
 void MistyAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-	buffer.clear();
+	buffer.clear(); // clear audio channels just in case ?
 
 	juce::MidiBuffer processedMidi;
 
-	for (const auto metadata : midiMessages)
-	{
-		auto message = metadata.getMessage();
-		const auto time = metadata.samplePosition;
+	int sampleDeltaToAdd = -samplesPlayed;
 
-		if (message.isNoteOn())
-		{
-			message = juce::MidiMessage::noteOn (message.getChannel(),
-				message.getNoteNumber(),
-				(juce::uint8) 64);
+	switch (state) {
+	case Started:
+		processedMidi.addEvents(midiBuffer, samplesPlayed, currentSamplesPerBlock, sampleDeltaToAdd);
+		samplesPlayed += currentSamplesPerBlock;
+		break;
+	case Stopping:
+		samplesPlayed = 0;
+	case Starting:
+	case Pausing:
+		// all notes off
+		for (int c = 0; c < 0x10; c++) {
+			auto message = juce::MidiMessage(0xB0+c, 0x7b, 0x40);
+			DBG(message.getDescription());
+			processedMidi.addEvent(
+				message,
+				c);
 		}
-
-		processedMidi.addEvent (message, time);
+		state = (TransportState)(state+1);
+	default:
+		break;
 	}
 
 	midiMessages.swapWith(processedMidi);
@@ -166,34 +176,9 @@ void MistyAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
     // whose contents will have been created by the getStateInformation() call.
 }
 
+
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new MistyAudioProcessor();
-}
-
-juce::Result MistyAudioProcessor::loadMidiFile(juce::File &file) {
-
-	std::unique_ptr<juce::FileInputStream> fileStream (new juce::FileInputStream(file));
-
-	if (fileStream->failedToOpen())
-		return fileStream->getStatus();
-
-	midiFile.readFrom(*fileStream, false);
-	midiFile.convertTimestampTicksToSeconds();
-	DBG(midiFile.getLastTimestamp());
-	for (int jTrack = 0; jTrack < midiFile.getNumTracks(); jTrack++) {
-		DBG(jTrack);
-		auto track = midiFile.getTrack(jTrack);
-		for (int jEvent = 0; jEvent < track->getNumEvents(); jEvent++) {
-			auto event = track->getEventPointer(jEvent);
-			if (jTrack == 0)
-			{
-				DBG(event->message.getMetaEventType());
-				DBG(60.0 / event->message.getTempoSecondsPerQuarterNote());
-			}
-		}
-		DBG("=====================================================================");
-	}
-	return fileStream->getStatus();
 }
