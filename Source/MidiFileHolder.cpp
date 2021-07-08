@@ -1,6 +1,7 @@
 #include <JuceHeader.h>
 #include "MidiFileHolder.h"
 #include "PluginProcessor.h"
+#include "PluginEditor.h"
 
 MidiFileHolder::MidiFileHolder(MistyAudioProcessor* audioProcessor) :
 	audioProcessor (audioProcessor),
@@ -87,6 +88,12 @@ void MidiFileHolder::setFollowPlayback(bool shouldFollow)
 void MidiFileHolder::timerCallback()
 {
 	float t = audioProcessor->samplesPlayed/audioProcessor->currentSampleRate;
+	if (t > midiFile.getLastTimestamp()) {
+	    t = midiFile.getLastTimestamp();
+        audioProcessor->state = MistyAudioProcessor::Pausing;
+        auto parent = (MistyAudioProcessorEditor*)getParentComponent();
+        parent->playButtonClicked();
+	}
 	timeline.cursorPosition = t*MidiTrack::xScale + MidiTrack::margin;
 	if (followPlayback) {
 		auto y = tracksViewport.getViewPositionY();
