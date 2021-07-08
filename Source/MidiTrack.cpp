@@ -10,6 +10,8 @@ MidiTrack::MidiTrack(const juce::MidiMessageSequence& midiTrack, int trackNum, T
 	trackNum (trackNum),
 	parent (parent)
 {
+	setMouseCursor(juce::MouseCursor::IBeamCursor);
+
 	juce::Array<MidiNote*> noteStates;
 	noteStates.insertMultiple(0, nullptr, 128);
 	for (int jEvent = 0; jEvent<track.getNumEvents(); jEvent++)

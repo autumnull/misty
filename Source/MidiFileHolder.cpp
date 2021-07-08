@@ -55,6 +55,7 @@ juce::Result MidiFileHolder::loadMidiFile(juce::File &file) {
 			return juce::Result::fail("Cannot read format 2 midi files");
 
 		midiFile.convertTimestampTicksToSeconds();
+		timeline.maxtime = midiFile.getLastTimestamp();
 		tracksHolder->loadTracks(midiFile, midiFileType);
 
 		audioProcessor->midiBuffer.clear();

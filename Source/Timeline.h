@@ -8,6 +8,7 @@ class Timeline  : public juce::Component
 public:
 	float cursorPosition = 0;
 	float offset = 0;
+	float maxtime = 0;
 
 	Timeline(int);
     ~Timeline() override;
