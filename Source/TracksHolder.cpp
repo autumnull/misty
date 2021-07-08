@@ -3,6 +3,7 @@
 TracksHolder::TracksHolder(juce::Viewport& viewport)
 : viewport (viewport)
 {
+	setMouseCursor(juce::MouseCursor::IBeamCursor);
 	setSize(1000,1000);
 }
 
