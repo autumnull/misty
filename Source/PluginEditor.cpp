@@ -31,7 +31,7 @@ MistyAudioProcessorEditor::MistyAudioProcessorEditor(MistyAudioProcessor& p) :
 	playButton.setShape(playButtonShape, false, true, false);
 	playButton.onClick = [this] { playButtonClicked(); };
 	playButton.setClickingTogglesState(true);
-	auto light = GREY.brighter(0.5);
+	auto light = GREY.brighter(0.8);
 	playButton.setOnColours(light, light.brighter(0.5), light);
 	playButton.shouldUseOnColours(true);
 	addChildComponent(playButton);	// invisible until file loaded
@@ -79,7 +79,7 @@ void MistyAudioProcessorEditor::paint(juce::Graphics& g)
 void MistyAudioProcessorEditor::resized()
 {
 	openButton.setBounds(0, 0, 60, menuBarHeight);
-	followButton.setBounds(60, 0, getWidth()/2-60-1.5*menuBarHeight, menuBarHeight);
+	followButton.setBounds(60, 0, 70, menuBarHeight);
 
 	auto playBounds = juce::Rectangle<int>(getWidth()/2-menuBarHeight/2, 0, menuBarHeight, menuBarHeight);
 	auto resetBounds = playBounds.translated(-menuBarHeight, 0);
@@ -114,7 +114,8 @@ void MistyAudioProcessorEditor::openButtonClicked()
 
 	if (playButton.getToggleState()) {
 		audioProcessor.state = MistyAudioProcessor::Stopping;
-		playButton.setToggleState(false, juce::sendNotification);
+		playButton.setToggleState(false, juce::dontSendNotification);
+		playButtonClicked();
 	}
 
 	fileChooser = std::make_unique<juce::FileChooser>(
@@ -176,6 +177,11 @@ void MistyAudioProcessorEditor::playButtonClicked()
 		audioProcessor.state = MistyAudioProcessor::Pausing;
 	case MistyAudioProcessor::Stopping:	// happens when reset button clicked
 		playButton.setShape(playButtonShape, false, true, false);
+		playButton.setVisible(true);
+		break;
+	case MistyAudioProcessor::Pausing: // happens when end of file reached
+	    playButton.setVisible(false);
+	    playButton.setShape(playButtonShape, false, true, false);
 	default:
 		break;
 	}

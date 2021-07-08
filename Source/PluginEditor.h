@@ -17,16 +17,18 @@ public:
     void resized() override;
 
 private:
-	int menuBarHeight = 25;
+    friend MidiFileHolder;
+
+    int menuBarHeight = 25;
 
 	std::unique_ptr<juce::FileChooser> fileChooser;
-	bool fileLoaded = false;
+    bool fileLoaded = false;
 
 	juce::TextButton openButton;
-	juce::ToggleButton followButton {"Follow"};
-	juce::ShapeButton resetButton {"reset", GREY, GREY.brighter(), GREY};
-	juce::ShapeButton playButton  {"play",  GREY, GREY.brighter(), GREY};
-	juce::String statusMessage = "Select a MIDI file to play";
+    juce::ToggleButton followButton {"Follow"};
+    juce::ShapeButton resetButton {"reset", GREY, GREY.brighter(), GREY};
+    juce::ShapeButton playButton  {"play",  GREY, GREY.brighter(), GREY};
+    juce::String statusMessage = "Select a MIDI file to play";
 
 	juce::Path resetButtonShape;
 	juce::Path playButtonShape;
