@@ -20,10 +20,12 @@ public:
 
     juce::String getFilename();
 	juce::Result loadMidiFile(juce::File&);
+	void setFollowPlayback(bool);
 
 private:
 	int timelineHeight = 32;
 	Timeline timeline;
+	bool followPlayback = false;
 
 	MistyAudioProcessor* audioProcessor;
 

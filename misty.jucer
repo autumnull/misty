@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="UczeYC" name="misty" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildStandalone,buildVST,buildVST3"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildStandalone,buildVST3"
               pluginDesc="midi file reader/player" companyName="autumnull"
               projectLineFeed="&#10;" pluginCharacteristicsValue="pluginIsMidiEffectPlugin,pluginProducesMidiOut"
               version="0.0.0" pluginVST3Category="Generator" pluginRTASCategory="2048"
