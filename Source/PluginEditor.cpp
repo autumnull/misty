@@ -14,6 +14,9 @@ MistyAudioProcessorEditor::MistyAudioProcessorEditor(MistyAudioProcessor& p) :
 	openButton.onClick = [this] { openButtonClicked(); };
 	addAndMakeVisible(&openButton);
 
+	followButton.onClick = [this] { followButtonClicked(); };
+	addChildComponent(followButton);
+
 	resetButtonShape.addRectangle(2, 2, 4, 23);
 	resetButtonShape.addTriangle(6, 12.5, 23, 23, 23, 2);
 
@@ -76,6 +79,7 @@ void MistyAudioProcessorEditor::paint(juce::Graphics& g)
 void MistyAudioProcessorEditor::resized()
 {
 	openButton.setBounds(0, 0, 60, menuBarHeight);
+	followButton.setBounds(60, 0, getWidth()/2-60-1.5*menuBarHeight, menuBarHeight);
 
 	auto playBounds = juce::Rectangle<int>(getWidth()/2-menuBarHeight/2, 0, menuBarHeight, menuBarHeight);
 	auto resetBounds = playBounds.translated(-menuBarHeight, 0);
@@ -88,11 +92,13 @@ void MistyAudioProcessorEditor::resized()
 void MistyAudioProcessorEditor::setLoadedInterface(bool isLoaded)
 {
 	if (isLoaded) {
+		followButton.setVisible(true);
 		playButton.setVisible(true);
 		resetButton.setVisible(true);
 		midiFileHolder.setVisible(true);
 	}
 	else {
+		followButton.setVisible(false);
 		playButton.setVisible(false);
 		resetButton.setVisible(false);
 		midiFileHolder.setVisible(false);
@@ -133,6 +139,11 @@ void MistyAudioProcessorEditor::openButtonClicked()
 			repaint();
 		}
 	);
+}
+
+void MistyAudioProcessorEditor::followButtonClicked()
+{
+	midiFileHolder.setFollowPlayback(followButton.getToggleState());
 }
 
 void MistyAudioProcessorEditor::resetButtonClicked()

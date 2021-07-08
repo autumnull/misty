@@ -78,10 +78,26 @@ juce::Result MidiFileHolder::loadMidiFile(juce::File &file) {
 	return fileStream->getStatus();
 }
 
+void MidiFileHolder::setFollowPlayback(bool shouldFollow)
+{
+	followPlayback = shouldFollow;
+}
+
 void MidiFileHolder::timerCallback()
 {
 	float t = audioProcessor->samplesPlayed/audioProcessor->currentSampleRate;
 	timeline.cursorPosition = t*MidiTrack::xScale + MidiTrack::margin;
+	if (followPlayback) {
+		auto y = tracksViewport.getViewPositionY();
+		auto viewWidth = tracksViewport.getViewWidth();
+		auto x =
+			fmin(tracksHolder->getWidth() - viewWidth,
+				fmax(
+					0,
+					t*MidiTrack::xScale - viewWidth/2
+				));
+		tracksViewport.setViewPosition(x, y);
+	}
 	timeline.offset = tracksViewport.getViewPositionX();
 	timeline.repaint();
 }

@@ -23,6 +23,7 @@ private:
 	bool fileLoaded = false;
 
 	juce::TextButton openButton;
+	juce::ToggleButton followButton {"Follow"};
 	juce::ShapeButton resetButton {"reset", GREY, GREY.brighter(), GREY};
 	juce::ShapeButton playButton  {"play",  GREY, GREY.brighter(), GREY};
 	juce::String statusMessage = "Select a MIDI file to play";
@@ -37,6 +38,7 @@ private:
 	void setLoadedInterface(bool);
 
     void openButtonClicked();
+    void followButtonClicked();
 	void resetButtonClicked();
 	void playButtonClicked();
 
