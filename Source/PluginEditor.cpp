@@ -6,8 +6,8 @@ MistyAudioProcessorEditor::MistyAudioProcessorEditor(MistyAudioProcessor& p) :
 	audioProcessor(p),
 	midiFileHolder(this, &p)
 {
-	setResizable(true, true);
-	setResizeLimits(600, 265, 1200, 800);
+    lookAndFeel->setColourScheme(juce::LookAndFeel_V4::getMidnightColourScheme());
+    setLookAndFeel(lookAndFeel.get());
 
 	openButton.setButtonText("Open");
 	openButton.setColour(juce::TextButton::buttonColourId, juce::Colours::transparentWhite);
@@ -38,12 +38,14 @@ MistyAudioProcessorEditor::MistyAudioProcessorEditor(MistyAudioProcessor& p) :
 
 	addChildComponent(midiFileHolder);
 
+    setResizable(true, true);
+    setResizeLimits(600, 265, 1200, 800);
     setSize(600, 265);
 }
 
 MistyAudioProcessorEditor::~MistyAudioProcessorEditor()
 {
-
+    setLookAndFeel(nullptr);
 }
 
 void MistyAudioProcessorEditor::paint(juce::Graphics& g)
