@@ -4,7 +4,7 @@
 MistyAudioProcessorEditor::MistyAudioProcessorEditor(MistyAudioProcessor& p) :
 	AudioProcessorEditor(&p),
 	audioProcessor(p),
-	midiFileHolder(&p)
+	midiFileHolder(this, &p)
 {
 	setResizable(true, true);
 	setResizeLimits(600, 265, 1200, 800);

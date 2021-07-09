@@ -1,6 +1,7 @@
 #include "TracksHolder.h"
+#include "TracksViewport.h"
 
-TracksHolder::TracksHolder(juce::Viewport& viewport)
+TracksHolder::TracksHolder(TracksViewport& viewport)
 : viewport (viewport)
 {
 	setMouseCursor(juce::MouseCursor::IBeamCursor);

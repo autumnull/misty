@@ -2,13 +2,14 @@
 
 #include <JuceHeader.h>
 #include "MidiTrack.h"
+#include "TracksViewport.h"
 
 class MidiFileHolder;
 
 class TracksHolder : public juce::Component
 {
 public:
-    TracksHolder(juce::Viewport&);
+    TracksHolder(TracksViewport&);
 	~TracksHolder() override;
 
     void paint (juce::Graphics&) override;
@@ -23,7 +24,7 @@ private:
 
 	juce::OwnedArray<MidiTrack> tracks;
 
-	juce::Viewport& viewport;
+	TracksViewport& viewport;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TracksHolder)
 };

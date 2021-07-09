@@ -1,18 +1,20 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "MidiTrack.h"
-#include "TracksHolder.h"
 #include "Timeline.h"
+#include "TracksViewport.h"
+#include "TracksHolder.h"
+#include "MidiTrack.h"
 
 class MistyAudioProcessor;
+class MistyAudioProcessorEditor;
 
 class MidiFileHolder :
 	public juce::Component,
 	private juce::Timer
 {
 public:
-    MidiFileHolder(MistyAudioProcessor*);
+    MidiFileHolder(MistyAudioProcessorEditor*, MistyAudioProcessor*);
     ~MidiFileHolder() override;
 
     void paint(juce::Graphics&) override;
@@ -21,18 +23,20 @@ public:
     juce::String getFilename();
 	juce::Result loadMidiFile(juce::File&);
 	void setFollowPlayback(bool);
+	void viewportScrollbarMoved();
 
 private:
 	int timelineHeight = 32;
 	Timeline timeline;
 	bool followPlayback = false;
 
+	MistyAudioProcessorEditor* editor;
 	MistyAudioProcessor* audioProcessor;
 
 	juce::MidiFile midiFile;
 	juce::String filename = "";
 
-	juce::Viewport tracksViewport;
+	TracksViewport tracksViewport;
 	TracksHolder* tracksHolder;
 
 	void timerCallback() override;

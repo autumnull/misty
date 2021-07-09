@@ -3,9 +3,12 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-MidiFileHolder::MidiFileHolder(MistyAudioProcessor* audioProcessor) :
-	audioProcessor (audioProcessor),
-	timeline(timelineHeight)
+MidiFileHolder::MidiFileHolder(MistyAudioProcessorEditor* editor,
+                               MistyAudioProcessor* audioProcessor) :
+    editor (editor),
+    audioProcessor (audioProcessor),
+	timeline(timelineHeight),
+	tracksViewport(*this)
 {
 	tracksViewport.setViewedComponent(new TracksHolder(tracksViewport));
 	tracksHolder = (TracksHolder*)tracksViewport.getViewedComponent();
@@ -85,14 +88,20 @@ void MidiFileHolder::setFollowPlayback(bool shouldFollow)
 	followPlayback = shouldFollow;
 }
 
+void MidiFileHolder::viewportScrollbarMoved()
+{
+    editor->followButton.setToggleState(false, juce::sendNotification);
+    timeline.offset = tracksViewport.getViewPositionX();
+    timeline.repaint();
+}
+
 void MidiFileHolder::timerCallback()
 {
 	float t = audioProcessor->samplesPlayed/audioProcessor->currentSampleRate;
 	if (t > midiFile.getLastTimestamp()) {
 	    t = midiFile.getLastTimestamp();
         audioProcessor->state = MistyAudioProcessor::Pausing;
-        auto parent = (MistyAudioProcessorEditor*)getParentComponent();
-        parent->playButtonClicked();
+        editor->playButtonClicked();
 	}
 	timeline.cursorPosition = t*MidiTrack::xScale + MidiTrack::margin;
 	if (followPlayback) {
