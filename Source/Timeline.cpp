@@ -5,7 +5,6 @@
 Timeline::Timeline(int height) :
 	height (height)
 {
-	setMouseCursor(juce::MouseCursor::IBeamCursor);
 	setInterceptsMouseClicks(false, false);
 }
 

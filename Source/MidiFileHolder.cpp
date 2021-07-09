@@ -10,6 +10,8 @@ MidiFileHolder::MidiFileHolder(MistyAudioProcessorEditor* editor,
 	timeline(timelineHeight),
 	tracksViewport(*this)
 {
+    setMouseCursor(juce::MouseCursor::IBeamCursor);
+
 	tracksViewport.setViewedComponent(new TracksHolder(tracksViewport));
 	tracksHolder = (TracksHolder*)tracksViewport.getViewedComponent();
 	addAndMakeVisible(tracksViewport);
