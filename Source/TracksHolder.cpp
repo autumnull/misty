@@ -32,11 +32,11 @@ void TracksHolder::loadTracks(const juce::MidiFile& midiFile, int midiFileType) 
 	for (int jTrack = midiFileType; jTrack < midiFile.getNumTracks(); jTrack++)
 	{
 		auto track = *midiFile.getTrack(jTrack);
-		tracks.add(new MidiTrack(track, jTrack-1, this));
+		tracks.add(new MidiTrack(track, jTrack-midiFileType, this));
 		addAndMakeVisible(tracks.getLast());
 	}
 	auto newWidth =	midiFile.getLastTimestamp()*MidiTrack::xScale + 2*MidiTrack::margin;
-	auto newHeight = (midiFile.getNumTracks()-1)*trackHeight;
+	auto newHeight = (midiFile.getNumTracks()-midiFileType)*trackHeight;
 	setSize(newWidth, newHeight);
 	getTopLevelComponent()->setSize(
 		fmin(newWidth+10, 1200),
