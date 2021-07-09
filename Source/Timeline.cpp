@@ -20,6 +20,7 @@ void Timeline::paint (juce::Graphics& g)
 	g.setColour(juce::Colours::black);
 	g.fillRect(0, 0, getWidth(), height);
 
+	// ticks
 	g.setColour(juce::Colours::whitesmoke);
 	for (int t = 0; t < maxtime; t++) {
 		int x = MidiTrack::margin + t*MidiTrack::xScale - offset;

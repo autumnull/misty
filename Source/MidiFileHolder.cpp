@@ -103,7 +103,7 @@ void MidiFileHolder::timerCallback()
         audioProcessor->state = MistyAudioProcessor::Pausing;
         editor->playButtonClicked();
 	}
-	timeline.cursorPosition = t*MidiTrack::xScale + MidiTrack::margin;
+	timeline.cursorPosition = MidiTrack::margin + t*MidiTrack::xScale;
 	if (followPlayback) {
 		auto y = tracksViewport.getViewPositionY();
 		auto viewWidth = tracksViewport.getViewWidth();
@@ -111,7 +111,7 @@ void MidiFileHolder::timerCallback()
 			fmin(tracksHolder->getWidth() - viewWidth,
 				fmax(
 					0,
-					t*MidiTrack::xScale - viewWidth/2
+                    timeline.cursorPosition - viewWidth/2
 				));
 		tracksViewport.setViewPosition(x, y);
 	}
