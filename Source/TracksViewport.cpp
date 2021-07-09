@@ -5,7 +5,7 @@
 TracksViewport::TracksViewport(MidiFileHolder& midiFileHolder) :
     midiFileHolder (midiFileHolder)
 {
-
+    setInterceptsMouseClicks(false, true);
 }
 
 void TracksViewport::scrollBarMoved (juce::ScrollBar* scrollBarThatHasMoved, double newRangeStart)
@@ -22,5 +22,5 @@ void TracksViewport::scrollBarMoved (juce::ScrollBar* scrollBarThatHasMoved, dou
     }
 
     if (getHorizontalScrollBar().isMouseButtonDown(true))
-        midiFileHolder.viewportScrollbarMoved();
+        midiFileHolder.viewportScrolledByUser();
 }

@@ -19,11 +19,12 @@ public:
 
     void paint(juce::Graphics&) override;
     void resized() override;
+    void setTimePosition(float);
 
     juce::String getFilename();
 	juce::Result loadMidiFile(juce::File&);
 	void setFollowPlayback(bool);
-	void viewportScrollbarMoved();
+	void viewportScrolledByUser();
 
 private:
 	int timelineHeight = 32;

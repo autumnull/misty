@@ -93,11 +93,24 @@ void MistyAudioProcessorEditor::resized()
 
 bool MistyAudioProcessorEditor::keyPressed(const juce::KeyPress& key)
 {
-    if (key == juce::KeyPress::spaceKey) {
-        playButton.triggerClick();
+    if (key == juce::KeyPress::backspaceKey) {
+        resetButton.triggerClick();
         return true;
     }
-    return false;
+
+    switch (key.getTextCharacter()){
+    case ' ':
+        playButton.triggerClick();
+        return true;
+    case 'f':
+        followButton.triggerClick();
+        return true;
+    case 'o':
+        openButton.triggerClick();
+        return true;
+    default:
+        return false;
+    }
 }
 
 void MistyAudioProcessorEditor::setLoadedInterface(bool isLoaded)
@@ -139,14 +152,14 @@ void MistyAudioProcessorEditor::openButtonClicked()
 	{
 		auto file = chooser.getResult();
 
-		juce::Result status = midiFileHolder.loadMidiFile(file);
-		if (status.wasOk()) {
-			statusMessage = "";
-			setLoadedInterface(true);
-		} else {
-			statusMessage = "Couldn't open file: " + status.getErrorMessage();
-			setLoadedInterface(false);
-		}
+        juce::Result status = midiFileHolder.loadMidiFile(file);
+        if (status.wasOk()) {
+            statusMessage = "";
+            setLoadedInterface(true);
+        } else {
+            statusMessage = "Couldn't open file: " + status.getErrorMessage();
+            setLoadedInterface(false);
+        }
 	}
 	else {
 		statusMessage = "No MIDI file selected";
