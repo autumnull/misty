@@ -91,6 +91,15 @@ void MistyAudioProcessorEditor::resized()
 	midiFileHolder.setBounds(0, menuBarHeight, getWidth(), getHeight()-menuBarHeight);
 }
 
+bool MistyAudioProcessorEditor::keyPressed(const juce::KeyPress& key)
+{
+    if (key == juce::KeyPress::spaceKey) {
+        playButton.triggerClick();
+        return true;
+    }
+    return false;
+}
+
 void MistyAudioProcessorEditor::setLoadedInterface(bool isLoaded)
 {
 	if (isLoaded) {
