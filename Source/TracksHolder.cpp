@@ -4,7 +4,6 @@
 TracksHolder::TracksHolder(TracksViewport& viewport)
 : viewport (viewport)
 {
-	setMouseCursor(juce::MouseCursor::IBeamCursor);
 	setSize(1000,1000);
 }
 
@@ -46,5 +45,5 @@ void TracksHolder::loadTracks(const juce::MidiFile& midiFile, int midiFileType) 
 
 juce::Rectangle<int> TracksHolder::getRenderArea(int trackNum) {
 	auto pos = tracks[trackNum]->getBoundsInParent().getTopLeft();
-	return viewport.getViewArea().translated(-pos.x, -pos.y);
+	return viewport.getViewArea().translated(-pos.x, -pos.y).expanded(5,5);
 }

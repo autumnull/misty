@@ -12,10 +12,11 @@ public:
 		Starting,
 		Started,
 		Pausing,
-		Paused,
-		Stopping,
-		Stopped
-	};
+        Paused,
+        Stopping,
+        Stopped,
+        Jumping
+    };
 
 	MistyAudioProcessor();
     ~MistyAudioProcessor() override;
@@ -50,12 +51,13 @@ public:
 
     juce::MidiBuffer midiBuffer;
 
-	double currentSampleRate;
+	double currentSampleRate = 44100; // set a value to stop divide by zero
 	int currentSamplesPerBlock;
 	int samplesPlayed = 0;
 	TransportState state = Stopped;
 
 private:
+    void sendAllNotesOff(juce::MidiBuffer*);
 
 	MidiFileHolder* midiFileHolder;
 

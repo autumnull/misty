@@ -122,6 +122,7 @@ OBJECTS_SHARED_CODE := \
   $(JUCE_OBJDIR)/PluginProcessor_a059e380.o \
   $(JUCE_OBJDIR)/Timeline_dfee064a.o \
   $(JUCE_OBJDIR)/TracksHolder_e2b852dd.o \
+  $(JUCE_OBJDIR)/TracksViewport_a43141d7.o \
   $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o \
   $(JUCE_OBJDIR)/include_juce_audio_devices_63111d02.o \
   $(JUCE_OBJDIR)/include_juce_audio_formats_15f82001.o \
@@ -229,6 +230,11 @@ $(JUCE_OBJDIR)/Timeline_dfee064a.o: ../../Source/Timeline.cpp
 $(JUCE_OBJDIR)/TracksHolder_e2b852dd.o: ../../Source/TracksHolder.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling TracksHolder.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TracksViewport_a43141d7.o: ../../Source/TracksViewport.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling TracksViewport.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_SHARED_CODE) $(JUCE_CFLAGS_SHARED_CODE) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o: ../../JuceLibraryCode/include_juce_audio_basics.cpp

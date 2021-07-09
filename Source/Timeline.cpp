@@ -1,11 +1,12 @@
 #include <JuceHeader.h>
 #include "Timeline.h"
 #include "MidiTrack.h"
+#include "MidiFileHolder.h"
 
 Timeline::Timeline(int height) :
 	height (height)
 {
-	setInterceptsMouseClicks(false, false);
+    setMouseCursor(juce::MouseCursor::IBeamCursor);
 }
 
 Timeline::~Timeline()
@@ -50,4 +51,14 @@ void Timeline::paint (juce::Graphics& g)
 void Timeline::resized()
 {
 
+}
+
+void Timeline::mouseDown(const juce::MouseEvent& event)
+{
+    auto x = event.getMouseDownX();
+    auto t = fmax(0, (x + offset - MidiTrack::margin)/MidiTrack::xScale);
+    if (t < maxtime) {
+        auto midiFileHolder = (MidiFileHolder*)getParentComponent();
+        midiFileHolder->setTimePosition(t);
+    }
 }

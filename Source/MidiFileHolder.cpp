@@ -10,8 +10,6 @@ MidiFileHolder::MidiFileHolder(MistyAudioProcessorEditor* editor,
 	timeline(timelineHeight),
 	tracksViewport(*this)
 {
-    setMouseCursor(juce::MouseCursor::IBeamCursor);
-
 	tracksViewport.setViewedComponent(new TracksHolder(tracksViewport));
 	tracksHolder = (TracksHolder*)tracksViewport.getViewedComponent();
 	addAndMakeVisible(tracksViewport);
@@ -44,11 +42,21 @@ void MidiFileHolder::resized()
 	tracksViewport.setBounds(0, timelineHeight, getWidth(), getHeight()-timelineHeight);
 }
 
+void MidiFileHolder::setTimePosition(float time)
+{
+    auto samples = time*audioProcessor->currentSampleRate;
+    audioProcessor->samplesPlayed = samples;
+    audioProcessor->state = MistyAudioProcessor::Jumping;
+}
+
 juce::String MidiFileHolder::getFilename() {
 	return filename;
 }
 
-juce::Result MidiFileHolder::loadMidiFile(juce::File &file) {
+juce::Result MidiFileHolder::loadMidiFile(juce::File &file)
+{
+    if (file.getFileExtension() != ".mid")
+        return juce::Result::fail("Not a MIDI file (.mid)");
 
 	std::unique_ptr<juce::FileInputStream> fileStream (new juce::FileInputStream(file));
 
@@ -57,8 +65,11 @@ juce::Result MidiFileHolder::loadMidiFile(juce::File &file) {
 		int midiFileType;
 		auto result = midiFile.readFrom(*fileStream, false, &midiFileType);
 
+		if (! result)
+		    return juce::Result::fail("Failed to read MIDI data");
+
 		if (midiFileType == 2)
-			return juce::Result::fail("Cannot read format 2 midi files");
+			return juce::Result::fail("Cannot read format 2 MIDI files");
 
 		midiFile.convertTimestampTicksToSeconds();
 		timeline.maxtime = midiFile.getLastTimestamp();
@@ -90,7 +101,7 @@ void MidiFileHolder::setFollowPlayback(bool shouldFollow)
 	followPlayback = shouldFollow;
 }
 
-void MidiFileHolder::viewportScrollbarMoved()
+void MidiFileHolder::viewportScrolledByUser()
 {
     editor->followButton.setToggleState(false, juce::sendNotification);
     timeline.offset = tracksViewport.getViewPositionX();
@@ -116,7 +127,7 @@ void MidiFileHolder::timerCallback()
                     timeline.cursorPosition - viewWidth/2
 				));
 		tracksViewport.setViewPosition(x, y);
-	}
-	timeline.offset = tracksViewport.getViewPositionX();
+        timeline.offset = x;
+    }
 	timeline.repaint();
 }

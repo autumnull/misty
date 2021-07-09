@@ -93,11 +93,24 @@ void MistyAudioProcessorEditor::resized()
 
 bool MistyAudioProcessorEditor::keyPressed(const juce::KeyPress& key)
 {
-    if (key == juce::KeyPress::spaceKey) {
-        playButton.triggerClick();
+    if (key == juce::KeyPress::backspaceKey) {
+        resetButton.triggerClick();
         return true;
     }
-    return false;
+
+    switch (key.getTextCharacter()){
+    case ' ':
+        playButton.triggerClick();
+        return true;
+    case 'f':
+        followButton.triggerClick();
+        return true;
+    case 'o':
+        openButton.triggerClick();
+        return true;
+    default:
+        return false;
+    }
 }
 
 void MistyAudioProcessorEditor::setLoadedInterface(bool isLoaded)

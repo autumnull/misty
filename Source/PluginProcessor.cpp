@@ -137,15 +137,12 @@ void MistyAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::M
 		samplesPlayed = 0;
 	case Starting:
 	case Pausing:
-		// all notes off
-		for (int c = 0; c < 0x10; c++) {
-			auto message = juce::MidiMessage(0xB0+c, 0x7b, 0x40);
-			DBG(message.getDescription());
-			processedMidi.addEvent(
-				message,
-				c);
-		}
+        sendAllNotesOff(&processedMidi);
 		state = (TransportState)(state+1);
+		break;
+	case Jumping:
+        sendAllNotesOff(&processedMidi);
+        state = Started;
 	default:
 		break;
 	}
@@ -176,6 +173,15 @@ void MistyAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
     // whose contents will have been created by the getStateInformation() call.
 }
 
+void MistyAudioProcessor::sendAllNotesOff(juce::MidiBuffer* buffer)
+{
+    for (int c = 0; c < 0x10; c++) {
+        auto message = juce::MidiMessage(0xB0+c, 0x7b, 0x40);
+        buffer->addEvent(
+            message,
+            c);
+    }
+}
 
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
