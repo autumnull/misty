@@ -66,6 +66,9 @@ void Timeline::mouseDown(const juce::MouseEvent& event)
 void Timeline::mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& wheel)
 {
     auto viewport = &midiFileHolder.tracksViewport;
+    auto viewportX = viewport->getViewPositionX();
     viewport->mouseWheelMove(event.getEventRelativeTo(viewport), wheel);
-    midiFileHolder.viewportScrolledByUser();
+
+    if (viewportX != viewport->getViewPositionX())
+        midiFileHolder.viewportScrolledByUser();
 }
