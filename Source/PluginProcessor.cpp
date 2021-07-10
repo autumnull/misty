@@ -181,9 +181,7 @@ void MistyAudioProcessor::sendAllNotesOff(juce::MidiBuffer* buffer)
 {
     for (int c = 0; c < 0x10; c++) {
         auto message = juce::MidiMessage(0xB0+c, 0x7b, 0x40);
-        buffer->addEvent(
-            message,
-            c);
+        buffer->addEvent(message, c);
     }
 }
 
