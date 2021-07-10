@@ -140,9 +140,13 @@ void MistyAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::M
         sendAllNotesOff(&processedMidi);
 		state = (TransportState)(state+1);
 		break;
-	case Jumping:
+	case JumpingStarted:
         sendAllNotesOff(&processedMidi);
         state = Started;
+        break;
+	case JumpingPaused:
+        sendAllNotesOff(&processedMidi);
+	    state = Paused;
 	default:
 		break;
 	}

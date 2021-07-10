@@ -57,13 +57,13 @@ void MidiTrack::paint (juce::Graphics& g)
 
 	float r = 2.5; // dot radius
 	float w = 1.0; // line radius
-	float space = 3.0f; // space above and below notes
+	float space = 5.0f; // space above and below notes
 	float lim = 0.1; // minimum possible alpha;
 	for (auto note : notes)
 	{
 		float x0 = margin + note->x0*xScale;
 		float x1 = margin + note->x1*xScale;
-		float y = space + (height - 2*space) * (1 - note->y);
+		float y = r + space + (height - 2*space) * (1 - note->y);
 
 		if (renderArea.contains(x0, y)
 		 || renderArea.contains(x1, y))

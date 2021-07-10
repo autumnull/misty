@@ -15,7 +15,8 @@ public:
         Paused,
         Stopping,
         Stopped,
-        Jumping
+        JumpingStarted,
+        JumpingPaused
     };
 
 	MistyAudioProcessor();

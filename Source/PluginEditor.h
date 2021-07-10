@@ -22,7 +22,6 @@ private:
 
     int menuBarHeight = 25;
 
-	std::unique_ptr<juce::FileChooser> fileChooser;
     bool fileLoaded = false;
 
 	juce::TextButton openButton;
@@ -37,6 +36,8 @@ private:
 
 	MistyAudioProcessor& audioProcessor;
 	MidiFileHolder midiFileHolder;
+
+	std::unique_ptr<juce::FileChooser> fileChooser;
 
 	std::unique_ptr<juce::LookAndFeel_V4> lookAndFeel {new juce::LookAndFeel_V4};
 

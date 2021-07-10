@@ -38,9 +38,6 @@ void TracksHolder::loadTracks(const juce::MidiFile& midiFile, int midiFileType) 
 	auto newWidth =	midiFile.getLastTimestamp()*MidiTrack::xScale + 2*MidiTrack::margin;
 	auto newHeight = (midiFile.getNumTracks()-midiFileType)*trackHeight;
 	setSize(newWidth, newHeight);
-	getTopLevelComponent()->setSize(
-		fmin(newWidth+10, 1200),
-		fmin(newHeight+100, 800));
 }
 
 juce::Rectangle<int> TracksHolder::getRenderArea(int trackNum) {
