@@ -25,7 +25,9 @@ public:
 	juce::Result loadMidiFile(juce::File&);
 	void setFollowPlayback(bool);
 	void viewportScrolledByUser();
+	void resetView();
 
+    TracksViewport tracksViewport;
 private:
 	int timelineHeight = 32;
 	Timeline timeline;
@@ -37,8 +39,7 @@ private:
 	juce::MidiFile midiFile;
 	juce::String filename = "";
 
-	TracksViewport tracksViewport;
-	TracksHolder* tracksHolder;
+    TracksHolder* tracksHolder;
 
 	void timerCallback() override;
 

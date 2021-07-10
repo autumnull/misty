@@ -38,6 +38,8 @@ private:
 	MistyAudioProcessor& audioProcessor;
 	MidiFileHolder midiFileHolder;
 
+	std::unique_ptr<juce::FileChooser> fileChooser;
+
 	std::unique_ptr<juce::LookAndFeel_V4> lookAndFeel {new juce::LookAndFeel_V4};
 
 	void setLoadedInterface(bool);

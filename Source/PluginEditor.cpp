@@ -39,7 +39,7 @@ MistyAudioProcessorEditor::MistyAudioProcessorEditor(MistyAudioProcessor& p) :
 	addChildComponent(midiFileHolder);
 
     setResizable(true, true);
-    setResizeLimits(600, 265, 1200, 800);
+    setResizeLimits(600, 265, 1400, 800);
     setSize(600, 265);
 }
 
@@ -137,35 +137,42 @@ void MistyAudioProcessorEditor::openButtonClicked()
 	else
 		return;
 
-	if (playButton.getToggleState()) {
-		audioProcessor.state = MistyAudioProcessor::Stopping;
-		playButton.setToggleState(false, juce::dontSendNotification);
-		playButtonClicked();
-	}
-
-	juce::FileChooser chooser(
+	fileChooser = std::unique_ptr<juce::FileChooser>(new juce::FileChooser(
 		"Select a MIDI file to play...",
 		juce::File::getSpecialLocation(juce::File::userMusicDirectory),
-		"*.mid");
+		"*.mid;*.MID"));
 
-	if (chooser.browseForFileToOpen())
+	int flags = juce::FileBrowserComponent::openMode
+	          | juce::FileBrowserComponent::canSelectFiles
+	          | juce::FileBrowserComponent::filenameBoxIsReadOnly
+	          | juce::FileBrowserComponent::doNotClearFileNameOnRootChange;
+	fileChooser->launchAsync(flags, [this](const juce::FileChooser& chooser)
 	{
-		auto file = chooser.getResult();
+        auto file = chooser.getResult();
 
-        juce::Result status = midiFileHolder.loadMidiFile(file);
-        if (status.wasOk()) {
-            statusMessage = "";
-            setLoadedInterface(true);
-        } else {
-            statusMessage = "Couldn't open file: " + status.getErrorMessage();
-            setLoadedInterface(false);
+        if (file.getFileName() != "")
+        {
+            if (playButton.getToggleState()) {
+                audioProcessor.state = MistyAudioProcessor::Stopping;
+                playButton.setToggleState(false, juce::dontSendNotification);
+                playButtonClicked();
+            }
+
+            juce::Result status = midiFileHolder.loadMidiFile(file);
+            if (status.wasOk()) {
+                statusMessage = "";
+                setLoadedInterface(true);
+            } else {
+                statusMessage = "Couldn't open file: " + status.getErrorMessage();
+                setLoadedInterface(false);
+            }
         }
-	}
-	else {
-		statusMessage = "No MIDI file selected";
-	}
-	repaint();
-	openingFile = false;
+        else {
+            statusMessage = "No MIDI file selected";
+        }
+        repaint();
+        openingFile = false;
+	});
 }
 
 void MistyAudioProcessorEditor::followButtonClicked()
@@ -184,6 +191,7 @@ void MistyAudioProcessorEditor::resetButtonClicked()
 		audioProcessor.state = MistyAudioProcessor::Stopping;
 		playButton.setToggleState(false, juce::sendNotification);
 	default:
+        midiFileHolder.resetView();
 		break;
 	}
 }

@@ -7,7 +7,7 @@ MidiFileHolder::MidiFileHolder(MistyAudioProcessorEditor* editor,
                                MistyAudioProcessor* audioProcessor) :
     editor (editor),
     audioProcessor (audioProcessor),
-	timeline(timelineHeight),
+	timeline(timelineHeight, *this),
 	tracksViewport(*this)
 {
 	tracksViewport.setViewedComponent(new TracksHolder(tracksViewport));
@@ -45,8 +45,19 @@ void MidiFileHolder::resized()
 void MidiFileHolder::setTimePosition(float time)
 {
     auto samples = time*audioProcessor->currentSampleRate;
-    audioProcessor->samplesPlayed = samples;
-    audioProcessor->state = MistyAudioProcessor::Jumping;
+
+    switch (audioProcessor->state) {
+    case MistyAudioProcessor::Started:
+        audioProcessor->samplesPlayed = samples;
+        audioProcessor->state = MistyAudioProcessor::JumpingStarted;
+        break;
+    case MistyAudioProcessor::Paused:
+    case MistyAudioProcessor::Stopped:
+        audioProcessor->samplesPlayed = samples;
+        audioProcessor->state = MistyAudioProcessor::JumpingPaused;
+    default:
+        break;
+    }
 }
 
 juce::String MidiFileHolder::getFilename() {
@@ -55,7 +66,7 @@ juce::String MidiFileHolder::getFilename() {
 
 juce::Result MidiFileHolder::loadMidiFile(juce::File &file)
 {
-    if (file.getFileExtension() != ".mid")
+    if (file.getFileExtension() != ".mid" && file.getFileExtension() != ".MID")
         return juce::Result::fail("Not a MIDI file (.mid)");
 
 	std::unique_ptr<juce::FileInputStream> fileStream (new juce::FileInputStream(file));
@@ -74,6 +85,14 @@ juce::Result MidiFileHolder::loadMidiFile(juce::File &file)
 		midiFile.convertTimestampTicksToSeconds();
 		timeline.maxtime = midiFile.getLastTimestamp();
 		tracksHolder->loadTracks(midiFile, midiFileType);
+		editor->setResizeLimits(
+		    600, 265,
+		    fmin(1400, tracksHolder->getWidth()),
+		    fmin(800, tracksHolder->getHeight()
+		        + editor->menuBarHeight
+		        + timelineHeight
+		        + tracksViewport.getScrollBarThickness())
+		    );
 
 		audioProcessor->midiBuffer.clear();
 		for (int t = 0; t < midiFile.getNumTracks(); t++)
@@ -105,6 +124,13 @@ void MidiFileHolder::viewportScrolledByUser()
 {
     editor->followButton.setToggleState(false, juce::sendNotification);
     timeline.offset = tracksViewport.getViewPositionX();
+    timeline.repaint();
+}
+
+void MidiFileHolder::resetView()
+{
+    tracksViewport.setViewPosition(0, tracksViewport.getViewPositionY());
+    timeline.offset = 0;
     timeline.repaint();
 }
 

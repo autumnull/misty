@@ -3,8 +3,9 @@
 #include "MidiTrack.h"
 #include "MidiFileHolder.h"
 
-Timeline::Timeline(int height) :
-	height (height)
+Timeline::Timeline(int height, MidiFileHolder& midiFileHolder) :
+	height (height),
+	midiFileHolder (midiFileHolder)
 {
     setMouseCursor(juce::MouseCursor::IBeamCursor);
 }
@@ -57,8 +58,14 @@ void Timeline::mouseDown(const juce::MouseEvent& event)
 {
     auto x = event.getMouseDownX();
     auto t = fmax(0, (x + offset - MidiTrack::margin)/MidiTrack::xScale);
-    if (t < maxtime) {
-        auto midiFileHolder = (MidiFileHolder*)getParentComponent();
-        midiFileHolder->setTimePosition(t);
-    }
+
+    if (t < maxtime)
+        midiFileHolder.setTimePosition(t);
+}
+
+void Timeline::mouseWheelMove(const juce::MouseEvent& event, const juce::MouseWheelDetails& wheel)
+{
+    auto viewport = &midiFileHolder.tracksViewport;
+    viewport->mouseWheelMove(event.getEventRelativeTo(viewport), wheel);
+    midiFileHolder.viewportScrolledByUser();
 }
