@@ -197,7 +197,9 @@ void MistyAudioProcessorEditor::resetButtonClicked()
 	case MistyAudioProcessor::Started:
 	case MistyAudioProcessor::Paused:
         p.state = MistyAudioProcessor::Stopping;
-		playButton.setToggleState(false, juce::sendNotification);
+		playButton.setToggleState(false, juce::dontSendNotification);
+		playButton.setShape(playButtonShape, false, true, false);
+		playButton.setVisible(true);
 	default:
         midiFileHolder.resetView();
 		break;
@@ -215,13 +217,7 @@ void MistyAudioProcessorEditor::playButtonClicked()
 		break;
 	case MistyAudioProcessor::Started:
         p.state = MistyAudioProcessor::Pausing;
-	case MistyAudioProcessor::Stopping:	// happens when reset button clicked
-		playButton.setShape(playButtonShape, false, true, false);
-		playButton.setVisible(true);
-		break;
-	case MistyAudioProcessor::Pausing: // happens when end of file reached
-	    playButton.setVisible(false);
-	    playButton.setShape(playButtonShape, false, true, false);
+        playButton.setShape(playButtonShape, false, true, false);
 	default:
 		break;
 	}

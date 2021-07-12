@@ -58,6 +58,7 @@ void MidiFileHolder::setTimePosition(float time)
     case MistyAudioProcessor::Stopped:
         p.samplesPlayed = samples;
         p.state = MistyAudioProcessor::JumpingPaused;
+        editor.playButton.setVisible(true);
     default:
         break;
     }
@@ -88,6 +89,7 @@ juce::Result MidiFileHolder::loadMidiFile(juce::File &file)
 		limitEditorSize();
         tracksViewport.setViewPosition(0,0);
 		tracksHolder->updateRenderArea(tracksViewport.getViewArea());
+		tracksHolder->resized();
 
 		p.midiBuffer.clear();
 		for (int t = 0; t < midiFile.getNumTracks(); t++)
@@ -100,7 +102,9 @@ juce::Result MidiFileHolder::loadMidiFile(juce::File &file)
 				p.midiBuffer.addEvent(m, sampleOffset);
 			}
 		}
-        p.samplesPlayed = 0;
+		p.state = MistyAudioProcessor::Stopping;
+		editor.playButton.setToggleState(false, juce::dontSendNotification);
+		editor.playButton.setShape(editor.playButtonShape, false, true, false);
         p.fileLoaded = file.getFileNameWithoutExtension();
 	}
 
@@ -109,16 +113,15 @@ juce::Result MidiFileHolder::loadMidiFile(juce::File &file)
 
 void MidiFileHolder::viewportScrolledByUser()
 {
-    p.viewportPosition = tracksViewport.getViewPosition();
     editor.followButton.setToggleState(false, juce::sendNotification);
-    timeline.offset = tracksViewport.getViewPositionX();
+    p.viewportPosition = tracksViewport.getViewPosition();
     timeline.repaint();
 }
 
 void MidiFileHolder::resetView()
 {
     tracksViewport.setViewPosition(0, tracksViewport.getViewPositionY());
-    timeline.offset = 0;
+    p.viewportPosition = tracksViewport.getViewPosition();
     timeline.repaint();
 }
 
@@ -137,24 +140,24 @@ void MidiFileHolder::limitEditorSize()
 
 void MidiFileHolder::timerCallback()
 {
-	float t = p.samplesPlayed/p.currentSampleRate;
-	if (t > p.maxtime) {
-	    t = p.maxtime;
-        p.state = MistyAudioProcessor::Pausing;
-        editor.playButtonClicked();
-	}
-	timeline.cursorPosition = MidiTrack::margin + t*MidiTrack::xScale;
-	if (p.following) {
-		auto y = tracksViewport.getViewPositionY();
-		auto viewWidth = tracksViewport.getViewWidth();
-		auto x =
-			fmin(tracksHolder->getWidth() - viewWidth,
-				fmax(
-					0,
-                    timeline.cursorPosition - viewWidth/2
-				));
-		tracksViewport.setViewPosition(x, y);
-        timeline.offset = x;
+	if (p.state == MistyAudioProcessor::Paused && editor.playButton.getToggleState()) {
+        editor.playButton.setVisible(false);
+        editor.playButton.setToggleState(false, juce::dontSendNotification);
+        editor.playButton.setShape(editor.playButtonShape, false, true, false);
     }
+    float t = p.samplesPlayed/p.currentSampleRate;
+    timeline.cursorPosition = MidiTrack::margin + t*MidiTrack::xScale;
+	if (p.following) {
+        auto y = tracksViewport.getViewPositionY();
+        auto viewWidth = tracksViewport.getViewWidth();
+        auto x =
+            fmin(tracksHolder->getWidth()-viewWidth,
+                fmax(
+                    0,
+                    timeline.cursorPosition-viewWidth/2
+                ));
+        tracksViewport.setViewPosition(x, y);
+    }
+	p.viewportPosition = tracksViewport.getViewPosition();
 	timeline.repaint();
 }

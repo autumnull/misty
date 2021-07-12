@@ -6,7 +6,7 @@
 
 Timeline::Timeline(MidiFileHolder& midiFileHolder, MistyAudioProcessor& p) :
     midiFileHolder (midiFileHolder),
-    audioProcessor (p)
+    p (p)
 {
     setMouseCursor(juce::MouseCursor::IBeamCursor);
 }
@@ -24,8 +24,10 @@ void Timeline::paint (juce::Graphics& g)
 
 	// ticks
 	g.setColour(juce::Colours::whitesmoke);
-	for (int t = 0; t < audioProcessor.maxtime; t++) {
-		int x = MidiTrack::margin + t*MidiTrack::xScale - offset;
+	auto start = floor((p.viewportPosition.x - 15)/MidiTrack::xScale);
+	auto end = ceil((p.viewportPosition.x+15+getWidth())/MidiTrack::xScale);
+	for (int t = start; t < end; t++) {
+		int x = MidiTrack::margin + t*MidiTrack::xScale - p.viewportPosition.x;
 		if (t % 5 == 0) {
 			g.fillRect(x-1, barHeight-10, 1, 10);
 			if (t % 2 == 0) {
@@ -42,11 +44,13 @@ void Timeline::paint (juce::Graphics& g)
 	}
 
 	// cursor
+    float t = p.samplesPlayed/p.currentSampleRate;
+    cursorPosition = MidiTrack::margin + t*MidiTrack::xScale;
 	g.setColour(juce::Colours::black);
 	g.drawLine(
-		cursorPosition-offset,
+		cursorPosition-p.viewportPosition.x,
 		barHeight,
-		cursorPosition-offset,
+		cursorPosition-p.viewportPosition.x,
 		getHeight());
 }
 
@@ -58,9 +62,9 @@ void Timeline::resized()
 void Timeline::mouseDown(const juce::MouseEvent& event)
 {
     auto x = event.getMouseDownX();
-    auto t = fmax(0, (x + offset - MidiTrack::margin)/MidiTrack::xScale);
+    auto t = fmax(0, (x+p.viewportPosition.x-MidiTrack::margin)/MidiTrack::xScale);
 
-    if (t < audioProcessor.maxtime)
+    if (t < p.maxtime)
         midiFileHolder.setTimePosition(t);
 }
 

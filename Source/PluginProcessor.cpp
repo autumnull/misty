@@ -133,6 +133,8 @@ void MistyAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::M
 	case Started:
 		processedMidi.addEvents(midiBuffer, samplesPlayed, currentSamplesPerBlock, sampleDeltaToAdd);
 		samplesPlayed += currentSamplesPerBlock;
+		if (samplesPlayed/currentSampleRate > maxtime)
+		    state = Pausing;
 		break;
 	case Stopping:
 		samplesPlayed = 0;
