@@ -5,26 +5,27 @@
 #include "TracksViewport.h"
 
 class MidiFileHolder;
+class MistyAudioProcessor;
 
 class TracksHolder : public juce::Component
 {
 public:
-    TracksHolder(TracksViewport&);
+    const static int trackHeight = 200;
+    const static int trackSpacing = 3;
+
+    TracksHolder(MidiFileHolder&, MistyAudioProcessor&);
+
 	~TracksHolder() override;
-
     void paint (juce::Graphics&) override;
+
     void resized() override;
-
     void loadTracks(const juce::MidiFile&, int);
-    juce::Rectangle<int> getRenderArea(int);
 
+    void updateRenderArea(juce::Rectangle<int>);
 private:
-	int trackHeight = 200;
-	int trackSpacing = 3;
 
-	juce::OwnedArray<MidiTrack> tracks;
-
-	TracksViewport& viewport;
+    MidiFileHolder& midiFileHolder;
+	MistyAudioProcessor& p;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TracksHolder)
 };

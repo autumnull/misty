@@ -10,17 +10,10 @@ TracksViewport::TracksViewport(MidiFileHolder& midiFileHolder) :
 
 void TracksViewport::scrollBarMoved (juce::ScrollBar* scrollBarThatHasMoved, double newRangeStart)
 {
-    auto newRangeStartInt = juce::roundToInt (newRangeStart);
-
-    if (scrollBarThatHasMoved == &getHorizontalScrollBar())
-    {
-        setViewPosition (newRangeStartInt, getViewPositionY());
-    }
-    else if (scrollBarThatHasMoved == &getVerticalScrollBar())
-    {
-        setViewPosition (getViewPositionX(), newRangeStartInt);
-    }
+    Viewport::scrollBarMoved(scrollBarThatHasMoved, newRangeStart);
 
     if (getHorizontalScrollBar().isMouseButtonDown(true))
         midiFileHolder.viewportScrolledByUser();
+
+    ((TracksHolder*)getViewedComponent())->updateRenderArea(getViewArea());
 }

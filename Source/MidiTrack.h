@@ -10,12 +10,14 @@ class MidiTrack  : public juce::Component
 public:
 	const static float margin; // margin around notes
 	static float xScale; // scale factor for pixels/seconds
-	MidiTrack(const juce::MidiMessageSequence&, int, TracksHolder*);
+	MidiTrack(const juce::MidiMessageSequence&, int);
 
     ~MidiTrack() override;
 	void paint (juce::Graphics&) override;
-
     void resized() override;
+
+    juce::Rectangle<int> renderArea;
+
 private:
 
 	struct MidiNote {
@@ -32,8 +34,6 @@ private:
 	int trackNum;
 	const juce::MidiMessageSequence& track;
 	juce::OwnedArray<MidiNote> notes;
-
-	TracksHolder* parent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiTrack)
 };

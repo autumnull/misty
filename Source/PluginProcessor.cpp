@@ -128,7 +128,8 @@ void MistyAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::M
 
 	int sampleDeltaToAdd = -samplesPlayed;
 
-	switch (state) {
+	switch (state)
+	{
 	case Started:
 		processedMidi.addEvents(midiBuffer, samplesPlayed, currentSamplesPerBlock, sampleDeltaToAdd);
 		samplesPlayed += currentSamplesPerBlock;

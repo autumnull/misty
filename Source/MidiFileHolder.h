@@ -14,32 +14,26 @@ class MidiFileHolder :
 	private juce::Timer
 {
 public:
-    MidiFileHolder(MistyAudioProcessorEditor*, MistyAudioProcessor*);
+    MidiFileHolder(MistyAudioProcessorEditor&, MistyAudioProcessor&);
     ~MidiFileHolder() override;
 
     void paint(juce::Graphics&) override;
     void resized() override;
     void setTimePosition(float);
 
-    juce::String getFilename();
 	juce::Result loadMidiFile(juce::File&);
-	void setFollowPlayback(bool);
 	void viewportScrolledByUser();
 	void resetView();
+	void limitEditorSize();
 
     TracksViewport tracksViewport;
 private:
-	int timelineHeight = 32;
-	Timeline timeline;
-	bool followPlayback = false;
+    Timeline timeline;
 
-	MistyAudioProcessorEditor* editor;
-	MistyAudioProcessor* audioProcessor;
+	MistyAudioProcessorEditor& editor;
+	MistyAudioProcessor& p;
 
-	juce::MidiFile midiFile;
-	juce::String filename = "";
-
-    TracksHolder* tracksHolder;
+    TracksHolder* tracksHolder = nullptr;
 
 	void timerCallback() override;
 

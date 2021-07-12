@@ -3,15 +3,16 @@
 #include <JuceHeader.h>
 
 class MidiFileHolder;
+class MistyAudioProcessor;
 
 class Timeline  : public juce::Component
 {
 public:
 	float cursorPosition = 0;
 	float offset = 0;
-	float maxtime = 0;
+	const static int barHeight = 32;
 
-	Timeline(int, MidiFileHolder&);
+	Timeline(MidiFileHolder&, MistyAudioProcessor&);
     ~Timeline() override;
 
     void paint (juce::Graphics&) override;
@@ -20,8 +21,8 @@ public:
     void mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails&) override;
 
 private:
-	int height;
 	MidiFileHolder& midiFileHolder;
+	MistyAudioProcessor& audioProcessor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Timeline)
 };

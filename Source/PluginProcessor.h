@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 #include "MidiFileHolder.h"
+#include "MidiTrack.h"
 
 class MistyAudioProcessor :
 	public juce::AudioProcessor
@@ -50,12 +51,19 @@ public:
     void getStateInformation(juce::MemoryBlock& destData) override;
     void setStateInformation(const void* data, int sizeInBytes) override;
 
+	double currentSampleRate = 44100; // set an initial value to stop divide by zero
+    int currentSamplesPerBlock;
+    int samplesPlayed = 0;
+    TransportState state = Stopped;
+
     juce::MidiBuffer midiBuffer;
 
-	double currentSampleRate = 44100; // set a value to stop divide by zero
-	int currentSamplesPerBlock;
-	int samplesPlayed = 0;
-	TransportState state = Stopped;
+	// store all these here so they're preserved when the editor is closed.
+    juce::String fileLoaded = "";
+    float maxtime = 0;
+    bool following = false;
+    juce::Point<int> viewportPosition {0, 0};
+    juce::OwnedArray<MidiTrack> tracks;
 
 private:
     void sendAllNotesOff(juce::MidiBuffer*);
