@@ -5,10 +5,9 @@
 const float MidiTrack::margin = 10.0f;
 float MidiTrack::xScale = 24.0f;
 
-MidiTrack::MidiTrack(const juce::MidiMessageSequence& midiTrack, int trackNum, TracksHolder* parent) :
+MidiTrack::MidiTrack(const juce::MidiMessageSequence& midiTrack, int trackNum) :
 	track (midiTrack),
-	trackNum (trackNum),
-	parent (parent)
+	trackNum (trackNum)
 {
 	juce::Array<MidiNote*> noteStates;
 	noteStates.insertMultiple(0, nullptr, 128);
@@ -50,7 +49,6 @@ void MidiTrack::paint (juce::Graphics& g)
 	g.fillAll(juce::Colours::white);
 
 	float height = getHeight(), width = getWidth();
-	auto renderArea = parent->getRenderArea(trackNum);
 
 	if (renderArea.getBottom() < 0 || renderArea.getY() > height)
 		return;

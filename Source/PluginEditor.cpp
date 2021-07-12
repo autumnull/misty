@@ -2,19 +2,19 @@
 #include "PluginEditor.h"
 
 MistyAudioProcessorEditor::MistyAudioProcessorEditor(MistyAudioProcessor& p) :
-	AudioProcessorEditor(&p),
-	audioProcessor(p),
-	midiFileHolder(this, &p)
+    AudioProcessorEditor(&p),
+    p(p),
+    midiFileHolder(*this, p)
 {
     lookAndFeel->setColourScheme(juce::LookAndFeel_V4::getMidnightColourScheme());
     setLookAndFeel(lookAndFeel.get());
 
-	openButton.setButtonText("Open");
 	openButton.setColour(juce::TextButton::buttonColourId, juce::Colours::transparentWhite);
 	openButton.onClick = [this] { openButtonClicked(); };
 	addAndMakeVisible(&openButton);
 
 	followButton.onClick = [this] { followButtonClicked(); };
+	followButton.setToggleState(p.following, juce::dontSendNotification);
 	addChildComponent(followButton);
 
 	resetButtonShape.addRectangle(2, 2, 4, 23);
@@ -22,25 +22,34 @@ MistyAudioProcessorEditor::MistyAudioProcessorEditor(MistyAudioProcessor& p) :
 
 	resetButton.setShape(resetButtonShape, false, true, false);
 	resetButton.onClick = [this] { resetButtonClicked(); };
-	addChildComponent(resetButton);	// invisible until file loaded
+	addChildComponent(resetButton);
 
 	pauseButtonShape.addRectangle(4, 2, 6, 23);
 	pauseButtonShape.addRectangle(15, 2, 6, 23);
 	playButtonShape.addTriangle(3, 23, 3, 2, 22, 12.5);
 
-	playButton.setShape(playButtonShape, false, true, false);
+	auto playing = p.state == MistyAudioProcessor::Started;
+	playButton.setShape(playing ? pauseButtonShape : playButtonShape, false, true, false);
+	playButton.setToggleState(playing, juce::dontSendNotification);
 	playButton.onClick = [this] { playButtonClicked(); };
 	playButton.setClickingTogglesState(true);
 	auto light = GREY.brighter(0.8);
 	playButton.setOnColours(light, light.brighter(0.5), light);
 	playButton.shouldUseOnColours(true);
-	addChildComponent(playButton);	// invisible until file loaded
+	addChildComponent(playButton);
 
 	addChildComponent(midiFileHolder);
 
+	if (p.fileLoaded != "")
+        setLoadedInterface(true);
+
     setResizable(true, true);
-    setResizeLimits(600, 265, 1400, 800);
+    if (p.tracks.isEmpty())
+        setResizeLimits(600, 265, 1400, 800);
+    else
+        midiFileHolder.limitEditorSize();
     setSize(600, 265);
+    startTimer(100);
 }
 
 MistyAudioProcessorEditor::~MistyAudioProcessorEditor()
@@ -60,12 +69,12 @@ void MistyAudioProcessorEditor::paint(juce::Graphics& g)
 	// file info text
 	g.setColour(juce::Colours::lightgrey);
 	g.setFont(15.0f);
-	if (fileLoaded) {
+	if (p.fileLoaded != "") {
 		auto filenameArea = getLocalBounds()
 			.removeFromTop(menuBarHeight)
 			.removeFromRight((getWidth()-menuBarHeight)/2);
 		g.drawFittedText(
-			midiFileHolder.getFilename(),
+			p.fileLoaded,
 			filenameArea,
 			juce::Justification::centred, 1);
 	}
@@ -113,21 +122,21 @@ bool MistyAudioProcessorEditor::keyPressed(const juce::KeyPress& key)
     }
 }
 
+void MistyAudioProcessorEditor::timerCallback()
+{
+    if (isShowing() || isOnDesktop())
+    {
+        grabKeyboardFocus();
+        stopTimer();
+    }
+}
+
 void MistyAudioProcessorEditor::setLoadedInterface(bool isLoaded)
 {
-	if (isLoaded) {
-		followButton.setVisible(true);
-		playButton.setVisible(true);
-		resetButton.setVisible(true);
-		midiFileHolder.setVisible(true);
-	}
-	else {
-		followButton.setVisible(false);
-		playButton.setVisible(false);
-		resetButton.setVisible(false);
-		midiFileHolder.setVisible(false);
-	}
-	fileLoaded = isLoaded;
+    followButton.setVisible(isLoaded);
+    playButton.setVisible(isLoaded);
+    resetButton.setVisible(isLoaded);
+    midiFileHolder.setVisible(isLoaded);
 }
 
 void MistyAudioProcessorEditor::openButtonClicked()
@@ -145,48 +154,49 @@ void MistyAudioProcessorEditor::openButtonClicked()
 	          | juce::FileBrowserComponent::canSelectFiles
 	          | juce::FileBrowserComponent::filenameBoxIsReadOnly
 	          | juce::FileBrowserComponent::doNotClearFileNameOnRootChange;
-	fileChooser->launchAsync(flags, [this](const juce::FileChooser& chooser)
-	{
-        auto file = chooser.getResult();
+	fileChooser->launchAsync(
+	    flags,
+	    [this](const juce::FileChooser& chooser) {
+            auto file = chooser.getResult();
 
-        if (file.getFileName() != "")
-        {
-            if (playButton.getToggleState()) {
-                audioProcessor.state = MistyAudioProcessor::Stopping;
-                playButton.setToggleState(false, juce::dontSendNotification);
-                playButtonClicked();
-            }
+            if (file.getFileName() != "")
+            {
+                if (playButton.getToggleState()) {
+                    p.state = MistyAudioProcessor::Stopping;
+                    playButton.setToggleState(false, juce::dontSendNotification);
+                    playButtonClicked();
+                }
 
-            juce::Result status = midiFileHolder.loadMidiFile(file);
-            if (status.wasOk()) {
-                statusMessage = "";
-                setLoadedInterface(true);
-            } else {
-                statusMessage = "Couldn't open file: " + status.getErrorMessage();
-                setLoadedInterface(false);
+                juce::Result status = midiFileHolder.loadMidiFile(file);
+                if (status.wasOk()) {
+                    statusMessage = "";
+                    setLoadedInterface(true);
+                } else {
+                    statusMessage = "Couldn't open file: " + status.getErrorMessage();
+                    setLoadedInterface(false);
+                    p.fileLoaded = "";
+                }
             }
-        }
-        else {
-            statusMessage = "No MIDI file selected";
-        }
-        repaint();
-	});
+            else {
+                statusMessage = "No MIDI file selected";
+            }
+            grabKeyboardFocus();
+            repaint();
+	    });
 }
 
 void MistyAudioProcessorEditor::followButtonClicked()
 {
-	midiFileHolder.setFollowPlayback(followButton.getToggleState());
+	p.following = followButton.getToggleState();
 }
 
 void MistyAudioProcessorEditor::resetButtonClicked()
 {
-	if (! fileLoaded)
-		return;
-
-	switch (audioProcessor.state) {
+	switch (p.state)
+	{
 	case MistyAudioProcessor::Started:
 	case MistyAudioProcessor::Paused:
-		audioProcessor.state = MistyAudioProcessor::Stopping;
+        p.state = MistyAudioProcessor::Stopping;
 		playButton.setToggleState(false, juce::sendNotification);
 	default:
         midiFileHolder.resetView();
@@ -196,17 +206,15 @@ void MistyAudioProcessorEditor::resetButtonClicked()
 
 void MistyAudioProcessorEditor::playButtonClicked()
 {
-	if (! fileLoaded)
-		return;
-
-	switch (audioProcessor.state) {
+	switch (p.state)
+	{
 	case MistyAudioProcessor::Stopped:
 	case MistyAudioProcessor::Paused:
-		audioProcessor.state = MistyAudioProcessor::Starting;
+        p.state = MistyAudioProcessor::Starting;
 		playButton.setShape(pauseButtonShape, false, true, false);
 		break;
 	case MistyAudioProcessor::Started:
-		audioProcessor.state = MistyAudioProcessor::Pausing;
+        p.state = MistyAudioProcessor::Pausing;
 	case MistyAudioProcessor::Stopping:	// happens when reset button clicked
 		playButton.setShape(playButtonShape, false, true, false);
 		playButton.setVisible(true);
