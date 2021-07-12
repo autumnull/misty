@@ -8,9 +8,8 @@ class MistyAudioProcessor;
 class Timeline  : public juce::Component
 {
 public:
-	float cursorPosition = 0;
-	float offset = 0;
 	const static int barHeight = 32;
+    float cursorPosition = 0;
 
 	Timeline(MidiFileHolder&, MistyAudioProcessor&);
     ~Timeline() override;
@@ -22,7 +21,7 @@ public:
 
 private:
 	MidiFileHolder& midiFileHolder;
-	MistyAudioProcessor& audioProcessor;
+	MistyAudioProcessor& p;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Timeline)
 };
