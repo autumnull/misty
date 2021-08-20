@@ -64,7 +64,8 @@ void MidiTrack::paint (juce::Graphics& g)
 		float y = r + space + (height - 2*space) * (1 - note->y);
 
 		if (renderArea.contains(x0, y)
-		 || renderArea.contains(x1, y))
+		 || renderArea.contains(x1, y)
+		 || (x0 <= renderArea.getX() && renderArea.getRight() <= x1))
 		{
 			g.setColour(
 				juce::Colours::black
